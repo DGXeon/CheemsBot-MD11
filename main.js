@@ -17,46 +17,16 @@ const { Boom } = require('@hapi/boom')
 const { Low, JSONFile } = require('./lib/lowdb')
 const yargs = require('yargs/yargs')
 const fs = require('fs')
-const { writeFileSync } = require('fs')
 const chalk = require('chalk')
 const FileType = require('file-type')
 const path = require('path')
 const axios = require('axios')
 const _ = require('lodash')
-const { fileURLToPath } = require('url')
 const moment = require('moment-timezone')
 const PhoneNumber = require('awesome-phonenumber')
 const { imageToWebp, videoToWebp, writeExifImg, writeExifVid } = require('./lib/exif')
 const { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, fetch, await, sleep, reSize } = require('./lib/myfunc')
 const { default: XeonBotIncConnect, getAggregateVotesInPollMessage, delay, PHONENUMBER_MCC, makeCacheableSignalKeyStore, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto, Browsers} = require("@whiskeysockets/baileys")
-global.authFolder = 'session';
-
-async function nigga(txt) {
-    try {
-        const credsPath = path.join(__dirname, authFolder, 'creds.json');
-        let url = `https://pastebin.com/raw/${txt}`;
-        let res = await axios.get(url);
-        let jsonn = res.data; 
-        await fs.promises.writeFile(credsPath, JSON.stringify(jsonn, null, 2));
-        console.log('JSON data saved to creds.json');
-    } catch (error) {
-        console.error('Session id invalid or not found, please re-input session id in settings.js', error.message);
-    }
-}
-
-async function giganigga() {
-    try {
-        let sess = sessionid.replace("dgxeon-", "");
-        await nigga(sess);
-        await delay(12000);
-    } catch (error) {
-        console.error('Session id invalid or not found, please re-input session id in settings.js', error.message);
-    }
-}
-
-giganigga();
-
-
 
 const store = makeInMemoryStore({
     logger: pino().child({
@@ -97,7 +67,7 @@ require('./main.js')
 nocache('../main.js', module => console.log(color('[ CHANGE ]', 'green'), color(`'${module}'`, 'green'), 'Updated'))
 
 //------------------------------------------------------
-let phoneNumber = ""
+let phoneNumber = "916909137213"
 let owner = JSON.parse(fs.readFileSync('./src/data/role/owner.json'))
 
 const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code")
@@ -107,37 +77,27 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 const question = (text) => new Promise((resolve) => rl.question(text, resolve))
 
 async function startXeonBotInc() {
-
 let { version, isLatest } = await fetchLatestBaileysVersion()
-const {  state, saveCreds } =await useMultiFileAuthState(authFolder)
+const {  state, saveCreds } =await useMultiFileAuthState(`./session`)
     const msgRetryCounterCache = new NodeCache() // for retry message, "waiting message"
     const XeonBotInc = makeWASocket({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: !pairingCode, // popping up QR in terminal log
       browser: Browsers.windows('Firefox'), // for this issues https://github.com/WhiskeySockets/Baileys/issues/328
-     auth: state,
-     patchMessageBeforeSending: (message) => {
-                const requiresPatch = !!(
-                    message.buttonsMessage 
-                    || message.templateMessage
-                    || message.listMessage
-                );
-                if (requiresPatch) {
-                    message = {
-                        viewOnceMessage: {
-                            message: {
-                                messageContextInfo: {
-                                    deviceListMetadataVersion: 2,
-                                    deviceListMetadata: {},
-                                },
-                                ...message,
-                            },
-                        },
-                    };
-                }
+     auth: {
+         creds: state.creds,
+         keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
+      },
+      markOnlineOnConnect: true, // set false for offline
+      generateHighQualityLinkPreview: true, // make high preview link
+      getMessage: async (key) => {
+         let jid = jidNormalizedUser(key.remoteJid)
+         let msg = await store.loadMessage(jid, key.id)
 
-                return message;
-            }
+         return msg?.message || ""
+      },
+      msgRetryCounterCache, // Resolve waiting messages
+      defaultQueryTimeoutMs: undefined, // for this issues https://github.com/WhiskeySockets/Baileys/issues/276
    })
    
    store.bind(XeonBotInc.ev)
