@@ -53,6 +53,10 @@ Cheems Bot Multi Device is a automated whatsapp bot created by <a href="https://
 - [`2nd GC`](https://chat.whatsapp.com/BW0o3ZyiAF5Azb1bIqG9Ue)
 - [`3rd GC`](https://chat.whatsapp.com/KMymhLdGcjPHihOkrfHW7q)
 
+## `For Termux & Panel User, Download This👇`
+- [`Click Here`](https://shrinkme.pro/y07LYARu)
+
+
 # Setup For Deployment 👇
 
 - FORK THE REPOSITORY [Here](https://github.com/DGXeon/CheemsBot-MD11/fork)
