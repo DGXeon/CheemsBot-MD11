@@ -10,7 +10,7 @@ Cheems Bot Multi Device is a automated whatsapp bot created by <a href="https://
 </p>
 
 <p align="center">
-<a href="https://youtu.be/L_SIk59QeAU"><img title="Size" src="https://img.shields.io/badge/Tutorial-Video-green"></a>
+<a href="https://youtu.be/z8LZ6G1bIuo"><img title="Size" src="https://img.shields.io/badge/Tutorial-Video-green"></a>
 </p>
 
 ------
